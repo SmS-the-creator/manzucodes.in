@@ -1,58 +1,54 @@
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #a23e7b;
-  color: #333;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #c61d87;
+    color: #222;
+    text-align: center;
 }
 
 .container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #e9cfe0;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+    background-color: #f3dcec;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 20px;
 }
 
-h1 {
-  color: #222;
-}
-
-form {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-input[type="text"] {
-  padding: 10px;
-  width: 70%;
-  border: 2px solid #a23e7b;
-  border-radius: 8px 0 0 8px;
-  outline: none;
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
 }
 
 button {
-  padding: 10px 15px;
-  background-color: #a23e7b;
-  color: #fff;
-  border: none;
-  border-radius: 0 8px 8px 0;
-  cursor: pointer;
+    background-color: #b62488;
+    color: white;
+    cursor: pointer;
 }
 
 button:hover {
-  background-color: #8c2f66;
+    background-color: #d03c9f;
 }
 
-.weather-box {
-  background: #f5e7f0;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
+.weather-icon {
+    font-size: 60px;
+    margin: 20px 0;
 }
 
-.map-container {
-  margin-top: 15px;
+.speak-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #8e2c74;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+}
+
+footer {
+    margin-top: 50px;
+    font-size: 14px;
+    color: #fff;
 }
