@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weather App</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Weather App</h1>
+    <div class="container">
+        <h1>Weather App</h1>
+        <input type="text" id="cityInput" placeholder="Enter city name...">
+        <button onclick="getWeather()">Get Weather</button>
 
-    <form id="weatherForm">
-      <input type="text" id="city" placeholder="Enter city" required />
-      <button type="submit">Get Weather</button>
-    </form>
+        <div class="weather-output">
+            <h2 id="location">City Name</h2>
+            <p><strong>Temperature:</strong> <span id="temperature">--</span>°C</p>
+            <p><strong>Condition:</strong> <span id="condition">--</span></p>
+            <p class="weather-icon" id="weather-icon">🌤️</p>
+            <p><strong>Clothing Suggestion:</strong> <span id="suggestion">--</span></p>
 
-    <div id="result" class="weather-box">
-      <!-- Weather result will be inserted here -->
+            <button onclick="speakWeather()" class="speak-btn">🔊 Speak Weather</button>
+        </div>
+
+        <div id="map-section">
+            <h3>📍 Location Map</h3>
+            <iframe
+                id="map"
+                width="100%"
+                height="300"
+                style="border:0; border-radius: 10px;"
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <footer>
+        Powered by Mr. Manzur's WeatherMap API | flask Project
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
