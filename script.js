@@ -1,82 +1,58 @@
-const apiKey = "f26e1dad4fe7b0bbc3d0209808adfb10"; // Replace with your real key
+const form = document.getElementById("weatherForm");
+const resultDiv = document.getElementById("result");
 
-document.getElementById('weatherForm').addEventListener('submit', function (e) {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const city = document.getElementById('city').value.trim();
-  getWeather(city);
-});
+  const city = document.getElementById("city").value;
 
-document.getElementById("micButton").addEventListener("click", () => {
-  if (!("webkitSpeechRecognition" in window)) {
-    alert("Speech recognition not supported in this browser.");
-    return;
+  const apiKey = "YOUR_API_KEY"; // Replace with your real OpenWeatherMap API key
+  const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+
+  try {
+    const geoRes = await fetch(geoUrl);
+    const geoData = await geoRes.json();
+    if (geoData.length === 0) {
+      resultDiv.innerHTML = "❌ City not found!";
+      return;
+    }
+
+    const { lat, lon, name } = geoData[0];
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    const weatherRes = await fetch(weatherUrl);
+    const weatherData = await weatherRes.json();
+
+    const temp = weatherData.main.temp;
+    const condition = weatherData.weather[0].description;
+
+    let clothing = "";
+    if (temp < 10)
+      clothing = "🧥 It's cold! Wear a heavy jacket and warm clothes.";
+    else if (temp < 20)
+      clothing = "🧢 It's cool! You might need a light jacket.";
+    else if (temp < 30)
+      clothing = "👕 Nice weather! A T-shirt and jeans should be fine.";
+    else
+      clothing = "🌡️ It's hot! Wear shorts and stay hydrated.";
+
+    const mapEmbed = `
+      <div class="map-container">
+        <iframe 
+          width="100%" height="250" frameborder="0" style="border:0"
+          src="https://www.google.com/maps?q=${lat},${lon}&hl=es;z=14&output=embed" 
+          allowfullscreen>
+        </iframe>
+      </div>`;
+
+    resultDiv.innerHTML = `
+      <h2>${name}</h2>
+      <p><strong>Temperature:</strong> ${temp}°C</p>
+      <p><strong>Condition:</strong> ${condition}</p>
+      <p><strong>Clothing Suggestion:</strong> ${clothing}</p>
+      <h3>📍 Location Map</h3>
+      ${mapEmbed}
+    `;
+  } catch (err) {
+    console.error(err);
+    resultDiv.innerHTML = "⚠️ Error fetching weather data.";
   }
-
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.start();
-
-  recognition.onresult = function (event) {
-    const spokenCity = event.results[0][0].transcript;
-    document.getElementById("city").value = spokenCity;
-    getWeather(spokenCity);
-  };
-
-  recognition.onerror = function (event) {
-    alert("Speech error: " + event.error);
-  };
 });
-
-function getWeather(city) {
-  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.cod !== 200) {
-        document.getElementById("weatherBox").innerHTML = `<p style="color:red">City not found.</p>`;
-        speak("City not found. Please try again.");
-        return;
-      }
-
-      const temp = data.main.temp;
-      const desc = data.weather[0].description;
-      const icon = data.weather[0].icon;
-      const lat = data.coord.lat;
-      const lon = data.coord.lon;
-
-      let clothing = "";
-      if (temp < 10) clothing = "Wear a heavy jacket and warm clothes.";
-      else if (temp < 20) clothing = "You might need a light jacket.";
-      else if (temp < 30) clothing = "T-shirt and jeans should be fine.";
-      else clothing = "It's hot! Wear shorts and stay hydrated.";
-
-      document.getElementById("weatherBox").innerHTML = `
-        <h2>${city}</h2>
-        <p><strong>Temperature:</strong> ${temp}°C</p>
-        <p><strong>Condition:</strong> ${desc}</p>
-        <img src="http://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather icon">
-        <p><strong>Clothing Suggestion:</strong> ${clothing}</p>
-        <div class="map">
-          <h3>📍 Location Map</h3>
-          <iframe src="https://www.google.com/maps?q=${lat},${lon}&z=13&output=embed" allowfullscreen></iframe>
-        </div>
-      `;
-
-      const speechText = `The temperature in ${city} is ${temp} degrees Celsius with ${desc}. ${clothing}`;
-      speak(speechText);
-    })
-    .catch((err) => {
-      console.error(err);
-      document.getElementById("weatherBox").innerHTML = `<p style="color:red">Error fetching data.</p>`;
-      speak("Something went wrong while fetching weather data.");
-    });
-}
-
-function speak(text) {
-  const synth = window.speechSynthesis;
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "en-US";
-  synth.speak(utter);
-}
