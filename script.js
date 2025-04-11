@@ -1,58 +1,64 @@
-const form = document.getElementById("weatherForm");
-const resultDiv = document.getElementById("result");
+function getWeather() {
+    const city = document.getElementById('cityInput').value;
+    const apiKey = 'your_api_key'; // Replace with your actual API key
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const city = document.getElementById("city").value;
+    fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+            const temp = data.main.temp.toFixed(2);
+            const condition = data.weather[0].description;
+            const lat = data.coord.lat;
+            const lon = data.coord.lon;
 
-  const apiKey = "f26e1dad4fe7b0bbc3d0209808adfb10"; // Replace with your real OpenWeatherMap API key
-  const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+            document.getElementById('location').innerText = city;
+            document.getElementById('temperature').innerText = temp;
+            document.getElementById('condition').innerText = condition;
 
-  try {
-    const geoRes = await fetch(geoUrl);
-    const geoData = await geoRes.json();
-    if (geoData.length === 0) {
-      resultDiv.innerHTML = "❌ City not found!";
-      return;
-    }
+            // Icon
+            const icon = getWeatherIcon(condition);
+            document.getElementById('weather-icon').innerText = icon;
 
-    const { lat, lon, name } = geoData[0];
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
-    const weatherRes = await fetch(weatherUrl);
-    const weatherData = await weatherRes.json();
+            // Clothing suggestion with emojis
+            const suggestion = getClothingSuggestion(temp);
+            document.getElementById('suggestion').innerText = suggestion;
 
-    const temp = weatherData.main.temp;
-    const condition = weatherData.weather[0].description;
+            // Google Map location update
+            document.getElementById('map').src =
+                `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lon}`;
+        })
+        .catch(() => {
+            alert('City not found!');
+        });
+}
 
-    let clothing = "";
-    if (temp < 10)
-      clothing = "🧥 It's cold! Wear a heavy jacket and warm clothes.";
-    else if (temp < 20)
-      clothing = "🧢 It's cool! You might need a light jacket.";
-    else if (temp < 30)
-      clothing = "👕 Nice weather! A T-shirt and jeans should be fine.";
-    else
-      clothing = "🌡️ It's hot! Wear shorts and stay hydrated.";
+function getWeatherIcon(condition) {
+    condition = condition.toLowerCase();
+    if (condition.includes("clear")) return "☀️";
+    if (condition.includes("cloud")) return "☁️";
+    if (condition.includes("rain")) return "🌧️";
+    if (condition.includes("snow")) return "❄️";
+    if (condition.includes("storm")) return "⛈️";
+    return "🌈";
+}
 
-    const mapEmbed = `
-      <div class="map-container">
-        <iframe 
-          width="100%" height="250" frameborder="0" style="border:0"
-          src="https://www.google.com/maps?q=${lat},${lon}&hl=es;z=14&output=embed" 
-          allowfullscreen>
-        </iframe>
-      </div>`;
+function getClothingSuggestion(temp) {
+    if (temp > 30) return "It's hot! Wear shorts and stay hydrated 🩳💧";
+    if (temp > 20) return "Nice weather! Light clothes recommended 👕🌤️";
+    if (temp > 10) return "A bit chilly, wear a jacket 🧥🍂";
+    return "Cold weather! Wear warm clothes 🧣🧤🧥";
+}
 
-    resultDiv.innerHTML = `
-      <h2>${name}</h2>
-      <p><strong>Temperature:</strong> ${temp}°C</p>
-      <p><strong>Condition:</strong> ${condition}</p>
-      <p><strong>Clothing Suggestion:</strong> ${clothing}</p>
-      <h3>📍 Location Map</h3>
-      ${mapEmbed}
-    `;
-  } catch (err) {
-    console.error(err);
-    resultDiv.innerHTML = "⚠️ Error fetching weather data.";
-  }
-});
+function speakWeather() {
+    const location = document.getElementById('location').innerText;
+    const temperature = document.getElementById('temperature').innerText;
+    const condition = document.getElementById('condition').innerText;
+    const suggestion = document.getElementById('suggestion').innerText;
+
+    const message = `Weather report for ${location}. The temperature is ${temperature} degrees Celsius. The condition is ${condition}. Clothing suggestion: ${suggestion}.`;
+
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = 'en-US';
+    speech.rate = 1;
+    window.speechSynthesis.speak(speech);
+}
