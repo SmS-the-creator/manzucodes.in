@@ -5,7 +5,7 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const city = document.getElementById("city").value;
 
-  const apiKey = "YOUR_API_KEY"; // Replace with your real OpenWeatherMap API key
+  const apiKey = "f26e1dad4fe7b0bbc3d0209808adfb10"; // Replace with your real OpenWeatherMap API key
   const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 
   try {
