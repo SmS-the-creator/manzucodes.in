@@ -1,33 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Weather Voice App</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🌤️ Real-Time Weather Forecast</h1>
-      <p>Get current weather, clothing suggestions, and voice output!</p>
-    </header>
+    <h1>Weather App</h1>
 
-    <section class="form-section">
-      <form id="weatherForm">
-        <input type="text" id="city" placeholder="Enter city" required>
-        <button type="submit">Get Weather</button>
-        <button type="button" id="micButton" title="Click and speak a city name 🎤">🎤</button>
-      </form>
-    </section>
+    <form id="weatherForm">
+      <input type="text" id="city" placeholder="Enter city" required />
+      <button type="submit">Get Weather</button>
+    </form>
 
-    <section class="weather-info" id="weatherBox">
-      <!-- Weather info will show here -->
-    </section>
-
-    <footer>
-      <p>Powered by Mr. Manzu's WeatherMap API | Static Voice App</p>
-    </footer>
+    <div id="result" class="weather-box">
+      <!-- Weather result will be inserted here -->
+    </div>
   </div>
 
   <script src="script.js"></script>
